@@ -1,0 +1,12 @@
+#ignore ~ files
+*~
+
+#I use premake now but keeep these just because
+CMakeFiles/*
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+#always ignore stats and build dirs
+stats/*
+build/*
