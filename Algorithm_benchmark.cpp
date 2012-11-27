@@ -18,9 +18,11 @@ and implementations.
 #include "myalgorithms.h"
 
 
+//#define DEBUG 1
 
 
-#define NUMALGS 5
+
+#define NUMALGS 7
 #define NUMTESTS 12
 
 
@@ -56,11 +58,14 @@ int main()
 		table_results[0][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 
 		//check results
+#ifdef DEBUG
+		cout<<"Debug test\n";
 		for(int j=1; j<n_sizes[i]; j++) {
 			if(temp_array[j-1]>temp_array[j]) {
 				cout << "\n\n" << "Fail" <<"\n\n";
 			}
 		}
+#endif
 		memcpy(temp_array, test_array, n_sizes[i]*sizeof(int)); //reset array
 
 
@@ -68,22 +73,26 @@ int main()
 		heapsort(temp_array, n_sizes[i]);
 		table_results[1][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 		
+#ifdef DEBUG
 		for(int j=1; j<n_sizes[i]; j++) {
 			if(temp_array[j-1]>temp_array[j]) {
 				cout << "\n\n" << "Fail" <<"\n\n";
 			}
 		}
+#endif
 		memcpy(temp_array, test_array, n_sizes[i]*sizeof(int)); //reset array
 
 		before = clock();
 		ternaryHeapsort(temp_array, n_sizes[i]);
 		table_results[2][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 		
+#ifdef DEBUG
 		for(int j=1; j<n_sizes[i]; j++) {
 			if(temp_array[j-1]>temp_array[j]) {
 				cout << "\n\n" << "Fail" <<"\n\n";
 			}
 		}
+#endif
 		memcpy(temp_array, test_array, n_sizes[i]*sizeof(int)); //reset array
 
 
@@ -91,11 +100,13 @@ int main()
 		quicksort(temp_array, 0, n_sizes[i]-1);
 		table_results[3][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 		
+#ifdef DEBUG
 		for(int j=1; j<n_sizes[i]; j++) {
 			if(temp_array[j-1]>temp_array[j]) {
 				cout << "\n\n" << "Fail" <<"\n\n";
 			}
 		}
+#endif
 		memcpy(temp_array, test_array, n_sizes[i]*sizeof(int)); //reset array
 
 
@@ -103,11 +114,43 @@ int main()
 		mergesort(temp_array, 0, n_sizes[i]-1);
 		table_results[4][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 		
+#ifdef DEBUG
 		for(int j=1; j<n_sizes[i]; j++) {
 			if(temp_array[j-1]>temp_array[j]) {
 				cout << "\n\n" << "Fail" <<"\n\n";
 			}
 		}
+#endif
+		
+		memcpy(temp_array, test_array, n_sizes[i]*sizeof(int)); //reset array
+
+
+		before = clock();
+		iter_quicksort(temp_array, 0, n_sizes[i]-1);
+		table_results[5][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
+		
+#ifdef DEBUG
+		for(int j=1; j<n_sizes[i]; j++) {
+			if(temp_array[j-1]>temp_array[j]) {
+				cout << "\n\n" << "Fail" <<"\n\n";
+			}
+		}
+#endif
+
+		memcpy(temp_array, test_array, n_sizes[i]*sizeof(int)); //reset array
+
+
+		before = clock();
+		quick_insertionsort(temp_array, 0, n_sizes[i]-1);
+		table_results[6][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
+		
+#ifdef DEBUG
+		for(int j=1; j<n_sizes[i]; j++) {
+			if(temp_array[j-1]>temp_array[j]) {
+				cout << "\n\n" << "Fail" <<"\n\n";
+			}
+		}
+#endif
 		
 		delete[] temp_array;
 		delete[] test_array;
@@ -115,12 +158,13 @@ int main()
 
 	cout<<setw(50)<<"Sort time in milliseconds"<<endl;
 	cout<<setw(10)<<"N"<<setw(12)<<"itermerge"<<setw(10)<<"hsort"<<setw(10)<<"trihsort"<<setw(10)<<"qsort"<<setw(10)
-					<<"recmerge"<<endl<<endl;
+					<<"recmerge"<<setw(12)<<"iterqsort"<<setw(12)<<"qinssort"<<endl<<endl;
 
 	for(int i=0; i<num_n ;i++) {
 		cout<<setw(10)<<n_sizes[i]<<setw(12)<<table_results[0][i]*1000<<setw(10)<<table_results[1][i]*1000<<setw(10)
 							<<table_results[2][i]*1000<<setw(10)<<table_results[3][i]*1000<<setw(10)
-							<<table_results[4][i]*1000<<endl;
+							<<table_results[4][i]*1000<<setw(12)<<table_results[5][i]*1000
+							<<setw(12)<<table_results[6][i]*1000<<endl;
 	}
 
 

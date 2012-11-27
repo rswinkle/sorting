@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <ctime>
 #include <cmath>
+#include <cstdio>
 
 using namespace std;
 
@@ -300,6 +301,80 @@ void mergesort(int a[], int p, int r)
 }
 
 
+
+/*
+Iterative Quicksort.  Partion pivots on last element
+*/
+void iter_quicksort(int a[], int p, int r)
+{
+	
+	//fprintf(stderr, "\n%d\n", sizeof(int)*2*int(log((float)r)/log(2.0f)));
+	int* pr = new int[sizeof(int)*2*int(ceil(log((float)r)/log(2.0f)))];
+	int* pos = pr;
+	int x, i, j, temp, pl, rl;
+	
+	pr[0] = p;
+	pr[1] = r;
+	
+	while (pos >= pr) {
+		//cout << pos[0] << "\t" << pos[1] << "\n";
+		pl = pos[0];
+		rl = pos[1];
+		
+		x = a[rl];
+		i = pl-1;
+
+		for (j=pl; j<rl; j++) {
+			if (a[j] <= x) {
+				i++;
+				temp = a[j];
+				a[j] = a[i];
+				a[i] = temp;
+			}
+		}
+		temp = a[i+1];
+		a[i+1] = x;
+		a[pos[1]] = temp;
+		
+		
+		if (i+2 < rl) {
+			pos[0] = i+2;
+			pos[1] = rl;
+			
+			if (pl < i) {
+				pos += 2;
+				pos[0] = pl;
+				pos[1] = i;
+			}
+		} else if (pl < i) {
+			pos[0] = pl;
+			pos[1] = i;
+		} else {
+			pos -= 2;
+		}
+	}
+	
+	delete[] pr;
+	//free(pr);
+}
+
+
+/*
+Quicksort + insertion sort.  Partion pivots on last element
+*/
+
+void quick_insertionsort(int a[], int p, int r)
+{
+	if (p < r) {
+		if (r - p < 16) {
+			insertionsort(&a[p], r-p+1);
+		} else {
+			int q = partition(a,p,r);
+			quicksort(a, p, q-1);
+			quicksort(a, q+1, r);
+		}
+	}
+}
 
 
 
