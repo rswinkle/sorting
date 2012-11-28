@@ -11,7 +11,7 @@ using namespace std;
 /*
 An iterative mergesort that uses an auxilliary array
 of size max(2^floor(log_2(n/2)), n - 2*(2^floor(log_2(n/2)))) to sort the input array.*/
-void iterativemerge(int a[],int n)
+void iterative_merge(int a[], int n)
 {
 	int t = pow(2, floor(log(n/2)/log(2)));
 	int tempsize = max(t, n-2*t);          //uses a max of n/2 (if n = power of 2)
@@ -137,7 +137,7 @@ void maxheapify(int a[], int i, int heapsize)
 	return;
 }
 
-void heapsort(int a[],int n)
+void heapsort(int a[], int n)
 {
 	int temp;
 	int heapsize = n-1;
@@ -168,7 +168,7 @@ void heapsort(int a[],int n)
 #define left3(x) (3*(x)+3)
 #define parent3(x) (((x)-1)/3)
 
-void ternaryMaxheapify(int a[], int i, int heapsize)
+void ternary_maxheapify(int a[], int i, int heapsize)
 {
 	int largest;
 	int temp;
@@ -194,18 +194,18 @@ void ternaryMaxheapify(int a[], int i, int heapsize)
 		temp = a[i];
 		a[i] = a[largest];
 		a[largest] = temp;
-		ternaryMaxheapify(a, largest, heapsize);
+		ternary_maxheapify(a, largest, heapsize);
 	}
 	return;
 }
 
-void ternaryHeapsort(int a[],int n)
+void ternary_heapsort(int a[], int n)
 {
 	int temp;
 	int heapsize = n-1;
 
 	for(int i=(n-2)/3+1; i>=0; i--) {
-		ternaryMaxheapify(a, i, heapsize);
+		ternary_maxheapify(a, i, heapsize);
 	}
 	
 	for(int i=n-1; i>0; i--) {
@@ -213,7 +213,7 @@ void ternaryHeapsort(int a[],int n)
 		a[0] = a[i];
 		a[i] = temp;
 		heapsize--;
-		ternaryMaxheapify(a, 0, heapsize);
+		ternary_maxheapify(a, 0, heapsize);
 	}
 
 	return;
@@ -307,8 +307,6 @@ Iterative Quicksort.  Partion pivots on last element
 */
 void iter_quicksort(int a[], int p, int r)
 {
-	
-	//fprintf(stderr, "\n%d\n", sizeof(int)*2*int(log((float)r)/log(2.0f)));
 	int* pr = new int[sizeof(int)*2*int(ceil(log((float)r)/log(2.0f)))];
 	int* pos = pr;
 	int x, i, j, temp, pl, rl;
@@ -317,7 +315,6 @@ void iter_quicksort(int a[], int p, int r)
 	pr[1] = r;
 	
 	while (pos >= pr) {
-		//cout << pos[0] << "\t" << pos[1] << "\n";
 		pl = pos[0];
 		rl = pos[1];
 		
@@ -355,7 +352,6 @@ void iter_quicksort(int a[], int p, int r)
 	}
 	
 	delete[] pr;
-	//free(pr);
 }
 
 
@@ -366,12 +362,13 @@ Quicksort + insertion sort.  Partion pivots on last element
 void quick_insertionsort(int a[], int p, int r)
 {
 	if (p < r) {
-		if (r - p < 16) {
+		//25 (7150) < 32 (7230) < 16 (7300) < 20 (7360)
+		if (r - p < 25) {
 			insertionsort(&a[p], r-p+1);
 		} else {
 			int q = partition(a,p,r);
-			quicksort(a, p, q-1);
-			quicksort(a, q+1, r);
+			quick_insertionsort(a, p, q-1);
+			quick_insertionsort(a, q+1, r);
 		}
 	}
 }
