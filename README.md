@@ -1,10 +1,11 @@
-This is just a set of sorting algorithms and a benchmarking program
-I wrote sophomore year.  I'm making the initial commit exactly
-how I first wrote it so I can preserve how much I've improved and
-my coding style has changed.
+Sorting Algorithms
+==================
+
+This is just a set of sorting algorithms and a benchmarking program.
 
 I'll add several more algorithms and make some much needed
-improvements to some to make tmem more competetive.  Also
+improvements to some to make tmem more competetive.
+
 I realize that clock() isn't the most accurate/precise timing method
 but it's simple to use and will result in the same ranking even if
 those numbers aren't actually milliseconds.
