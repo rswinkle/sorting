@@ -1,22 +1,22 @@
-#include <iostream>
-#include <cstdlib>
-#include <algorithm>
-#include <ctime>
-#include <cmath>
-#include <cstdio>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <stdio.h>
 
-using namespace std;
 
 
 /*
 An iterative mergesort that uses an auxilliary array
-of size max(2^floor(log_2(n/2)), n - 2*(2^floor(log_2(n/2)))) to sort the input array.*/
+of size max(2^floor(log_2(n/2)), n - 2*(2^floor(log_2(n/2)))) to sort the input array.
+uses a max of n/2 (if n = power of 2)
+but it uses less as it gets farther away from powers of 2 (less than or greater than)
+*/
 void iterative_merge(int a[], int n)
 {
+
 	int t = pow(2, floor(log(n/2)/log(2)));
-	int tempsize = max(t, n-2*t);          //uses a max of n/2 (if n = power of 2)
-                                           //but it uses less as it gets farther away from powers of 2 (less than or greater than)
-	int* temparray = new int[tempsize];
+	int tempsize = (t > n-2*t) ? t : n-2*t;
+	int* temparray = (int*)malloc(tempsize*sizeof(int));
 	memset(temparray, 0, tempsize*sizeof(int));
 
 	int l, l_max, r, r_max, incr, i, j, cpy_size;
@@ -28,18 +28,22 @@ void iterative_merge(int a[], int n)
 			r = incr;
 			l_max = r-1;
 			r_max =  l_max + incr;
-			
-		} else {   //this case can only happen once and won't happen at all if n is power of 2
-			//these numbers seem reversed (smaller left over section would be on the right
-			//except, below, we shift the larger left side to the right so the smaller section becomes
-			//the "left"
+
+		} else {
+			/*
+ 			this case can only happen once and won't happen at all if n is power of 2
+			these numbers seem reversed (smaller left over section would be on the right
+			except, below, we shift the larger left side to the right so the smaller section becomes
+			the "left"
+			*/
 			l = 0;
 			r = n - incr;
 			l_max = r - 1;
 			r_max = n - 1;
 
-			memcpy(temparray, &a[incr], (n-incr)*sizeof(int));  //save smaller part into temparray 
-			memmove(&a[n-incr], &a[0], incr*sizeof(int));       //shift larger part to right
+			/*save smaller part into temparray and shift larger part to right */
+			memcpy(temparray, &a[incr], (n-incr)*sizeof(int));
+			memmove(&a[n-incr], &a[0], incr*sizeof(int));
 		}
 		
 		i = j = 0;
@@ -58,7 +62,7 @@ void iterative_merge(int a[], int n)
 					a[i] = temparray[j++];
 				}
 				
-				i++;
+				++i;
 			}
 			
 			while (j <= l_max-l) {
@@ -77,7 +81,7 @@ void iterative_merge(int a[], int n)
 		incr *= 2;
 	}
 
-	delete[] temparray;
+	free(temparray);
 	return;
 }
 
@@ -87,13 +91,13 @@ void insertionsort(int a[], int n)
 {
 	int temp,j;
 
-	for (int i=0; i<n; i++) {
+	for (int i=1; i<n; ++i) {
 		j = i-1;
 		temp = a[i];
 		
-		while (a[j] > temp && j >= 0) {
+		while (j >= 0 && a[j] > temp) {
 			a[j+1] = a[j];
-			j--;
+			--j;
 		}
 		a[j+1] = temp;
 	}
@@ -176,7 +180,7 @@ void ternary_maxheapify(int a[], int i, int heapsize)
 	int l = left3(i);
 	int m = middle(i);
 	int r = right3(i);
-	if (l<= heapsize && a[l] > a[i]) {
+	if (l <= heapsize && a[l] > a[i]) {
 		largest = l;
 	} else {
 		largest = i;
@@ -228,18 +232,22 @@ int partition(int a[], int p, int r)
 	int i = p-1;
 	int temp;
 
-	for (int j=p; j<r; j++) {
+	for (int j=p; j<r; ++j) {
 		if (a[j] <= x) {
-			i++;
+			++i;
+			//use memmove here
 			temp = a[j];
 			a[j] = a[i];
 			a[i] = temp;
 		}
 	}
-	temp = a[i+1];
-	a[i+1] = x;
+
+	++i;
+	//and memmove here to make a stable sort
+	temp = a[i];
+	a[i] = x;
 	a[r] = temp;
-	return i+1;
+	return i;
 }
 
 void quicksort(int a[], int p, int r)
@@ -260,23 +268,23 @@ void merge(int a[], int p, int q, int r)
 	int n2 = r - q;
 	int i,j;
 	
-	int * a1 = new int[n1];
-	int * a2 = new int[n2];
+	int * a1 = (int*)malloc(n1*sizeof(int));
+	int * a2 = (int*)malloc(n2*sizeof(int));
 
 	memcpy(a1, &a[p], n1*sizeof(int));
 	memcpy(a2, &a[q+1], n2*sizeof(int));
 
 	i = j = 0;
 
-	for (int k=p; k<=r; k++) {
+	for (int k=p; k<=r; ++k) {
 		if (i == n1) {
 			a[k] = a2[j];
-			j++;
+			++j;
 			continue;
 		}
 		if (j == n2) {
 			a[k] = a1[i];
-			i++;
+			++i;
 			continue;
 		}
 		if (a1[i] <= a2[j]) {
@@ -286,8 +294,8 @@ void merge(int a[], int p, int q, int r)
 		}
 	}
 	
-	delete[] a1;
-	delete[] a2;
+	free(a1);
+	free(a2);
 }
 
 void mergesort(int a[], int p, int r)
@@ -307,51 +315,63 @@ Iterative Quicksort.  Partion pivots on last element
 */
 void iter_quicksort(int a[], int p, int r)
 {
-	int* pr = new int[sizeof(int)*2*int(ceil(log((float)r)/log(2.0f)))];
+	//TODO figure out why 2*ceil(log(r+1)/log(2)) wasn't enough
+	int sz = 4*(int)ceil(log(r+1)/log(2.0));
+
+	int* pr = (int*)malloc(sizeof(int) * sz);
 	int* pos = pr;
 	int x, i, j, temp, pl, rl;
+	//printf("pr = %p\n", pr);
 	
 	pr[0] = p;
 	pr[1] = r;
 	
 	while (pos >= pr) {
+		/*
+		for (int k=0; k<=r; ++k)
+			printf("%d ", a[k]);
+		putchar('\n');
+		*/
+
 		pl = pos[0];
 		rl = pos[1];
 		
 		x = a[rl];
 		i = pl-1;
 
-		for (j=pl; j<rl; j++) {
+		for (j=pl; j<rl; ++j) {
 			if (a[j] <= x) {
-				i++;
+				++i;
 				temp = a[j];
 				a[j] = a[i];
 				a[i] = temp;
 			}
 		}
-		temp = a[i+1];
-		a[i+1] = x;
-		a[pos[1]] = temp;
+		++i;
+		temp = a[i];
+		a[i] = x;
+		a[rl] = temp;
 		
 		
-		if (i+2 < rl) {
-			pos[0] = i+2;
+		if (i+1 < rl) {
+			pos[0] = i+1;
 			pos[1] = rl;
 			
-			if (pl < i) {
+			if (pl < i-1) {
 				pos += 2;
 				pos[0] = pl;
-				pos[1] = i;
+				pos[1] = i-1;
 			}
-		} else if (pl < i) {
+		} else if (pl < i-1) {
 			pos[0] = pl;
-			pos[1] = i;
+			pos[1] = i-1;
 		} else {
 			pos -= 2;
 		}
 	}
 	
-	delete[] pr;
+	//printf("pr = %p\n", pr);
+	free(pr);
 }
 
 

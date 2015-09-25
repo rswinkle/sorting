@@ -17,7 +17,7 @@ solution "Sorting"
 --		excludes { "" }
 --		libdirs { "/usr/lib64/" }
 --		includedirs { "./inc" }
-		--links { "cunit" } 
+		links { "m" }
 		targetdir "build"
 
 		configuration "Debug"
@@ -30,4 +30,30 @@ solution "Sorting"
 
 		configuration { "linux", "gmake" }
 			buildoptions { "-pedantic" }
+
+	project "benchmark"
+		location "build"
+		kind "ConsoleApp"
+		language "C"
+		files
+		{
+			"main.c",
+			"sorting_algs.h"
+		}
+--		excludes { "" }
+--		libdirs { "/usr/lib64/" }
+--		includedirs { "./inc" }
+		links { "m" }
+		targetdir "build"
+
+		configuration "Debug"
+			defines { "DEBUG" }
+			flags { "Symbols" }
+
+		configuration "Release"
+			defines { "NDEBUG" }
+			flags { "Optimize" }
+
+		configuration { "linux", "gmake" }
+			buildoptions { "-std=c99", "-pedantic" }
 
