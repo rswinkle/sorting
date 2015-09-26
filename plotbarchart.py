@@ -9,7 +9,7 @@ n = lines[0].split()[1:]
 
 fig, ax = plt.subplots()
 
-width = 0.1       # the width of the bars
+width = 0.15       # the width of the bars
 names = []
 data = []
 
@@ -21,17 +21,21 @@ for line in lines[1:]:
 
 
 ind = np.arange(len(data[0]))
+colors = [ 'c', 'm', 'y', 'r', 'g', 'b' ]
 
+bars = []
 for i in range(len(data)):
     print(data[i])
     print(len(ind+width))
-    ax.bar(ind+i*width, data[i], width)
+    bars += [ax.bar(ind+i*width, data[i], width, color=colors[i])]
 
 
 ax.set_ylabel("Time in ms (apprx)")
-ax.set_title("Sort time by algorithm and N")
+ax.set_title("Quicksort times")
 ax.set_xticks(ind+(width*len(names)/2))
 ax.set_xticklabels(n)
+
+ax.legend(bars, names, loc=2)
 
 
 plt.savefig("chart.png")

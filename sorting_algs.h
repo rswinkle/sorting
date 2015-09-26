@@ -11,7 +11,7 @@ of size max(2^floor(log_2(n/2)), n - 2*(2^floor(log_2(n/2)))) to sort the input 
 uses a max of n/2 (if n = power of 2)
 but it uses less as it gets farther away from powers of 2 (less than or greater than)
 */
-void iterative_merge(int a[], int n)
+void iterative_merge(int a[], size_t n)
 {
 
 	int t = pow(2, floor(log(n/2)/log(2)));
@@ -87,7 +87,7 @@ void iterative_merge(int a[], int n)
 
 
 //Insertion sort
-void insertionsort(int a[], int n)
+void insertionsort(int a[], size_t n)
 {
 	int temp,j;
 
@@ -115,13 +115,13 @@ void insertionsort(int a[], int n)
 #define left(x) (2*(x)+1)
 #define parent(x) (((x)-1)/2)
 
-void maxheapify(int a[], int i, int heapsize)
+void maxheapify(int a[], size_t i, size_t heapsize)
 {
 	int largest;
 	int temp;
 
-	int l = left(i);
-	int r = right(i);
+	size_t l = left(i);
+	size_t r = right(i);
 	if (l <= heapsize && a[l] > a[i]) {
 		largest = l;
 	} else {
@@ -141,10 +141,10 @@ void maxheapify(int a[], int i, int heapsize)
 	return;
 }
 
-void heapsort(int a[], int n)
+void heapsort(int a[], size_t n)
 {
 	int temp;
-	int heapsize = n-1;
+	size_t heapsize = n-1;
 
 	for (int i=(n-2)/2; i>=0; i--) {
 		maxheapify(a, i, heapsize);
@@ -172,14 +172,14 @@ void heapsort(int a[], int n)
 #define left3(x) (3*(x)+3)
 #define parent3(x) (((x)-1)/3)
 
-void ternary_maxheapify(int a[], int i, int heapsize)
+void ternary_maxheapify(int a[], size_t i, size_t heapsize)
 {
 	int largest;
 	int temp;
 
-	int l = left3(i);
-	int m = middle(i);
-	int r = right3(i);
+	size_t l = left3(i);
+	size_t m = middle(i);
+	size_t r = right3(i);
 	if (l <= heapsize && a[l] > a[i]) {
 		largest = l;
 	} else {
@@ -203,10 +203,10 @@ void ternary_maxheapify(int a[], int i, int heapsize)
 	return;
 }
 
-void ternary_heapsort(int a[], int n)
+void ternary_heapsort(int a[], size_t n)
 {
 	int temp;
-	int heapsize = n-1;
+	size_t heapsize = n-1;
 
 	for(int i=(n-2)/3+1; i>=0; i--) {
 		ternary_maxheapify(a, i, heapsize);
@@ -226,13 +226,13 @@ void ternary_heapsort(int a[], int n)
 /*
 Quicksort.  Partion pivots on last element
 */
-int partition(int a[], int p, int r)
+size_t partition(int a[], size_t p, size_t r)
 {
 	int x = a[r];
-	int i = p-1;
+	size_t i = p-1;
 	int temp;
 
-	for (int j=p; j<r; ++j) {
+	for (size_t j=p; j<r; ++j) {
 		if (a[j] <= x) {
 			++i;
 			//use memmove here
@@ -250,23 +250,101 @@ int partition(int a[], int p, int r)
 	return i;
 }
 
-void quicksort(int a[], int p, int r)
+void quicksort(int a[], size_t p, size_t r)
 {
-	if (p < r) {
-		int q = partition(a,p,r);
+	if (p < r && ~r) {
+		size_t q = partition(a,p,r);
 		quicksort(a, p, q-1);
 		quicksort(a, q+1, r);
 	}
 }
 
+
+
+
+/* Generic Quicksort.  Partion pivots on last element*/
+
+int generic_partition(void* array, size_t p, size_t r, size_t size, int(*compare)(const void*, const void*))
+{
+	unsigned char* a = (unsigned char*)array;
+	unsigned char* x = &a[r*size];
+	size_t i = p-1;
+	int temp, k;
+	unsigned char* ptr1, *ptr2;
+
+	for (size_t j=p; j<r; ++j) {
+		if (compare(&a[j*size], x) <= 0) {
+			++i;
+
+			k = size;
+			ptr1 = &a[j*size];
+			ptr2 = &a[i*size];
+			while (k >= sizeof(int)) {
+				temp = *(int*)ptr1;
+				*(int*)ptr1 = *(int*)ptr2;
+				*(int*)ptr2 = temp;
+				k -= sizeof(int);
+				ptr1 += sizeof(int);
+				ptr2 += sizeof(int);
+			}
+			while (k) {
+				temp = *ptr1;
+				*ptr1 = *ptr2;
+				*ptr2 = temp;
+				--k;
+				++ptr1;
+				++ptr2;
+			}
+		}
+	}
+
+	++i;
+	k = size;
+	ptr1 = &a[i*size];
+	while (k >= sizeof(int)) {
+		temp = *(int*)ptr1;
+		*(int*)ptr1 = *(int*)x;
+		*(int*)x = temp;
+		k -= sizeof(int);
+		ptr1 += sizeof(int);
+		x += sizeof(int);
+	}
+	while (k) {
+		temp = *ptr1;
+		*ptr1 = *x;
+		*x = temp;
+		--k;
+		++ptr1;
+		++x;
+	}
+	return i;
+}
+
+void generic_qsort_recurse(void* a, size_t p, size_t r, size_t size, int(*compare)(const void*, const void*))
+{
+	if (p < r && ~r) {
+		int q = generic_partition(a, p, r, size, compare);
+		generic_qsort_recurse(a, p, q-1, size, compare);
+		generic_qsort_recurse(a, q+1, r, size, compare);
+	}
+}
+
+void generic_qsort(void* a, size_t n, size_t size, int(*compare)(const void* , const void*))
+{
+	generic_qsort_recurse(a, 0, n-1, size, compare);
+}
+
+#undef u8
+
+
 /*
 Recursive Mergesort
 */
-void merge(int a[], int p, int q, int r)
+void merge(int a[], size_t p, size_t q, size_t r)
 {
-	int n1 = q - p + 1;
-	int n2 = r - q;
-	int i,j;
+	size_t n1 = q - p + 1;
+	size_t n2 = r - q;
+	size_t i,j;
 	
 	int * a1 = (int*)malloc(n1*sizeof(int));
 	int * a2 = (int*)malloc(n2*sizeof(int));
@@ -298,10 +376,10 @@ void merge(int a[], int p, int q, int r)
 	free(a2);
 }
 
-void mergesort(int a[], int p, int r)
+void mergesort(int a[], size_t p, size_t r)
 {
-	if(p < r) {
-		int q = (p+r)/2;
+	if (p < r) {
+		size_t q = (p+r)/2;
 		mergesort(a, p, q);
 		mergesort(a, q+1, r);
 		merge(a, p, q, r);
@@ -313,26 +391,21 @@ void mergesort(int a[], int p, int r)
 /*
 Iterative Quicksort.  Partion pivots on last element
 */
-void iter_quicksort(int a[], int p, int r)
+void iter_quicksort(int a[], size_t p, size_t r)
 {
 	//TODO figure out why 2*ceil(log(r+1)/log(2)) wasn't enough
 	int sz = 4*(int)ceil(log(r+1)/log(2.0));
 
-	int* pr = (int*)malloc(sizeof(int) * sz);
-	int* pos = pr;
-	int x, i, j, temp, pl, rl;
+	size_t* pr = (size_t*)malloc(sizeof(size_t) * sz);
+	size_t* pos = pr;
+	size_t i, j, pl, rl, test;
+	int x, temp;
 	//printf("pr = %p\n", pr);
 	
 	pr[0] = p;
 	pr[1] = r;
 	
 	while (pos >= pr) {
-		/*
-		for (int k=0; k<=r; ++k)
-			printf("%d ", a[k]);
-		putchar('\n');
-		*/
-
 		pl = pos[0];
 		rl = pos[1];
 		
@@ -352,25 +425,24 @@ void iter_quicksort(int a[], int p, int r)
 		a[i] = x;
 		a[rl] = temp;
 		
-		
+		test = i-1;
 		if (i+1 < rl) {
 			pos[0] = i+1;
 			pos[1] = rl;
 			
-			if (pl < i-1) {
+			if (pl < test && ~test) {
 				pos += 2;
 				pos[0] = pl;
-				pos[1] = i-1;
+				pos[1] = test;
 			}
-		} else if (pl < i-1) {
+		} else if (pl < test && ~test) {
 			pos[0] = pl;
-			pos[1] = i-1;
+			pos[1] = test;
 		} else {
 			pos -= 2;
 		}
 	}
 	
-	//printf("pr = %p\n", pr);
 	free(pr);
 }
 
@@ -379,14 +451,14 @@ void iter_quicksort(int a[], int p, int r)
 Quicksort + insertion sort.  Partion pivots on last element
 */
 
-void quick_insertionsort(int a[], int p, int r)
+void quick_insertionsort(int a[], size_t p, size_t r)
 {
-	if (p < r) {
+	if (p < r && ~r) {
 		//25 (7150) < 32 (7230) < 16 (7300) < 20 (7360)
 		if (r - p < 25) {
 			insertionsort(&a[p], r-p+1);
 		} else {
-			int q = partition(a,p,r);
+			size_t q = partition(a,p,r);
 			quick_insertionsort(a, p, q-1);
 			quick_insertionsort(a, q+1, r);
 		}
