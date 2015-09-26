@@ -31,7 +31,7 @@ for i in range(len(data)):
 
 
 ax.set_ylabel("Time in ms (apprx)")
-ax.set_title("Quicksort times")
+ax.set_title("Heapsort times")
 ax.set_xticks(ind+(width*len(names)/2))
 ax.set_xticklabels(n)
 

@@ -80,14 +80,13 @@ sort_alg algorithms[] =
 	{ iterative_merge,          "itermerge" },
 	{ heapsort,                 "hsort"     },     
 	{ ternary_heapsort,         "trihsort"  },
+	{ quad_heapsort,            "quadhsort" },
 	{ qsort_wrapper,            "qsort"     },
 	{ qsort_lib_wrapper,        "qsortlib"  },
 	{ mergesort_wrapper,        "recmerge"  },
 	{ iter_qsort_wrapper,       "iterqsort" },
 	{ qsort_insertion_wrapper,  "qinssort"  }
 };
-
-*/
 
 sort_alg algorithms[] =
 {
@@ -97,6 +96,16 @@ sort_alg algorithms[] =
 	{ iter_qsort_wrapper,       "iterqsort"     },
 	{ qsort_insertion_wrapper,  "qinssort"      }
 };
+*/
+
+sort_alg algorithms[] =
+{
+	{ heapsort,                 "hsort"     },     
+	{ ternary_heapsort,         "trihsort"  },
+	{ quad_heapsort,            "quadhsort" }
+};
+
+
 
 
 size_t n2_sizes[] = { 10, 50, 500, 1000, 5000, 10000, 50000 };
@@ -106,7 +115,8 @@ size_t n_sizes_small[] = { 10000, 50000, 100000+3, 500000-5, 1000000 };
 size_t n_sizes_med[] = { 10000, 50000, 100000+3, 500000-5, 1000000, 5000000, 10000000, 50000000 };
 size_t n_sizes_giant[] = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
 
-size_t n_sizes[] = { 500000, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
+
+size_t n_sizes[] = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
 
 #define NUM_ALGS (sizeof(algorithms)/sizeof(sort_alg))
 #define NUM_N (sizeof(n_sizes)/sizeof(size_t))
@@ -136,7 +146,7 @@ int main()
 		temp_array = (int*)malloc(n_sizes[i] * sizeof(int));
 
 		for(j=0; j<n_sizes[i]; ++j) {
-			temp_array[j] = test_array[j] = rand();
+			temp_array[j] = test_array[j] = rand() % (4*n_sizes[i]);
 		}
 		
 		printf("N = %lu\n", n_sizes[i]);

@@ -117,7 +117,7 @@ void insertionsort(int a[], size_t n)
 
 void maxheapify(int a[], size_t i, size_t heapsize)
 {
-	int largest;
+	size_t largest;
 	int temp;
 
 	size_t l = left(i);
@@ -145,16 +145,18 @@ void heapsort(int a[], size_t n)
 {
 	int temp;
 	size_t heapsize = n-1;
+	size_t i;
 
-	for (int i=(n-2)/2; i>=0; i--) {
+	for (i=(n-2)/2; i>0; --i) {
 		maxheapify(a, i, heapsize);
 	}
+	maxheapify(a, i, heapsize);
 
-	for (int i=n-1; i>0; i--) {
+	for (i=n-1; i>0; --i) {
 		temp = a[0];
 		a[0] = a[i];
 		a[i] = temp;
-		heapsize--;
+		--heapsize;
 		maxheapify(a, 0, heapsize);
 	}
 
@@ -167,14 +169,14 @@ void heapsort(int a[], size_t n)
 
 /* ternary heapsort and necessary macros/functions */
 
-#define right3(x) (3*(x)+1)
+#define right3(x) (3*(x)+3)
 #define middle(x) (3*(x)+2)
-#define left3(x) (3*(x)+3)
+#define left3(x) (3*(x)+1)
 #define parent3(x) (((x)-1)/3)
 
 void ternary_maxheapify(int a[], size_t i, size_t heapsize)
 {
-	int largest;
+	size_t largest;
 	int temp;
 
 	size_t l = left3(i);
@@ -207,21 +209,81 @@ void ternary_heapsort(int a[], size_t n)
 {
 	int temp;
 	size_t heapsize = n-1;
+	size_t i;
 
-	for(int i=(n-2)/3+1; i>=0; i--) {
+	for(i=(n-2)/3; i>0; --i) {
 		ternary_maxheapify(a, i, heapsize);
 	}
+	ternary_maxheapify(a, i, heapsize);
 	
-	for(int i=n-1; i>0; i--) {
+	for(i=n-1; i>0; --i) {
 		temp = a[0];
 		a[0] = a[i];
 		a[i] = temp;
-		heapsize--;
+		--heapsize;
 		ternary_maxheapify(a, 0, heapsize);
 	}
 
 	return;
 }
+
+
+/* quad heapsort and necessary macros/functions */
+
+#define right4(x) (4*(x)+4)
+#define left4(x) (4*(x)+1)
+#define parent4(x) (((x)-1)/4)
+
+void quad_maxheapify(int a[], size_t i, size_t heapsize)
+{
+	size_t largest;
+	int temp;
+
+	size_t l = left4(i);
+	size_t r = right4(i);
+
+	largest = i;
+	for (size_t j=l; j<=heapsize && j<=r; ++j) {
+		if (a[j] > a[largest])
+			largest = j;
+	}
+
+	if (largest != i) {
+		temp = a[i];
+		a[i] = a[largest];
+		a[largest] = temp;
+		quad_maxheapify(a, largest, heapsize);
+	}
+	return;
+}
+
+void quad_heapsort(int a[], size_t n)
+{
+	int temp;
+	size_t heapsize = n-1;
+	size_t i;
+
+	for(i=(n-2)/4; i>0; --i) {
+		quad_maxheapify(a, i, heapsize);
+	}
+	quad_maxheapify(a, i, heapsize);
+	
+	for(size_t i=n-1; i>0; --i) {
+		temp = a[0];
+		a[0] = a[i];
+		a[i] = temp;
+		--heapsize;
+		quad_maxheapify(a, 0, heapsize);
+	}
+
+	return;
+}
+
+
+
+
+
+
 
 /*
 Quicksort.  Partion pivots on last element
