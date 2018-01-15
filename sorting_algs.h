@@ -5,12 +5,10 @@
 
 
 
-/*
-An iterative mergesort that uses an auxilliary array
-of size max(2^floor(log_2(n/2)), n - 2*(2^floor(log_2(n/2)))) to sort the input array.
-uses a max of n/2 (if n = power of 2)
-but it uses less as it gets farther away from powers of 2 (less than or greater than)
-*/
+// An iterative mergesort that uses an auxilliary array
+// of size max(2^floor(log_2(n/2)), n - 2*(2^floor(log_2(n/2)))) to sort the input array.
+// uses a max of n/2 (if n = power of 2)
+// but it uses less as it gets farther away from powers of 2 (less than or greater than)
 void iterative_merge(int a[], size_t n)
 {
 
@@ -106,11 +104,7 @@ void insertionsort(int a[], size_t n)
 }
 
 
-
-/* Heapsort and necessary macros/functions
-
-*/
-
+// Heapsort and necessary macros/functions
 #define right(x) (2*(x)+2)
 #define left(x) (2*(x)+1)
 #define parent(x) (((x)-1)/2)
@@ -166,9 +160,7 @@ void heapsort(int a[], size_t n)
 
 
 
-
-/* ternary heapsort and necessary macros/functions */
-
+// ternary heapsort and necessary macros/functions
 #define right3(x) (3*(x)+3)
 #define middle(x) (3*(x)+2)
 #define left3(x) (3*(x)+1)
@@ -228,8 +220,7 @@ void ternary_heapsort(int a[], size_t n)
 }
 
 
-/* quad heapsort and necessary macros/functions */
-
+// quad heapsort and necessary macros/functions
 #define right4(x) (4*(x)+4)
 #define left4(x) (4*(x)+1)
 #define parent4(x) (((x)-1)/4)
@@ -280,14 +271,7 @@ void quad_heapsort(int a[], size_t n)
 }
 
 
-
-
-
-
-
-/*
-Quicksort.  Partion pivots on last element
-*/
+// Quicksort.  Partion pivots on last element
 size_t partition(int a[], size_t p, size_t r)
 {
 	int x = a[r];
@@ -322,10 +306,7 @@ void quicksort(int a[], size_t p, size_t r)
 }
 
 
-
-
-/* Generic Quicksort.  Partion pivots on last element*/
-
+// Generic Quicksort.  Partion pivots on last element
 int generic_partition(void* array, size_t p, size_t r, size_t size, int(*compare)(const void*, const void*))
 {
 	unsigned char* a = (unsigned char*)array;
@@ -396,12 +377,8 @@ void generic_qsort(void* a, size_t n, size_t size, int(*compare)(const void* , c
 	generic_qsort_recurse(a, 0, n-1, size, compare);
 }
 
-#undef u8
 
-
-/*
-Recursive Mergesort
-*/
+// Traditional Recursive Mergesort
 void merge(int a[], size_t p, size_t q, size_t r)
 {
 	size_t n1 = q - p + 1;
@@ -441,7 +418,7 @@ void merge(int a[], size_t p, size_t q, size_t r)
 void mergesort(int a[], size_t p, size_t r)
 {
 	if (p < r) {
-		size_t q = (p+r)/2;
+		size_t q = p + ((r - p) / 2);
 		mergesort(a, p, q);
 		mergesort(a, q+1, r);
 		merge(a, p, q, r);
@@ -449,10 +426,7 @@ void mergesort(int a[], size_t p, size_t r)
 }
 
 
-
-/*
-Iterative Quicksort.  Partion pivots on last element
-*/
+// Iterative Quicksort.  Partion pivots on last element
 void iter_quicksort(int a[], size_t p, size_t r)
 {
 	//TODO figure out why 2*ceil(log(r+1)/log(2)) wasn't enough
@@ -508,11 +482,7 @@ void iter_quicksort(int a[], size_t p, size_t r)
 	free(pr);
 }
 
-
-/*
-Quicksort + insertion sort.  Partion pivots on last element
-*/
-
+// Quicksort + insertion sort.  Partion pivots on last element
 void quick_insertionsort(int a[], size_t p, size_t r)
 {
 	if (p < r && ~r) {

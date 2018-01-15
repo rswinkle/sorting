@@ -1,12 +1,7 @@
-/*
-Written by Robert Winkler
-
-An benchmark program comparing different sorting algorithms
-and implementations.
-*/
-
-
-
+// Written by Robert Winkler
+// 
+// An benchmark program comparing different sorting algorithms
+// and implementations.
 
 #include <stdlib.h>
 #include <time.h>
@@ -15,10 +10,6 @@ and implementations.
 #include <assert.h>
 #include <limits.h>
 #include "sorting_algs.h"
-
-
-
-
 
 
 typedef void (*sort_func)(int[], size_t n);
@@ -72,13 +63,11 @@ typedef struct sort_alg
 	char name[40];
 } sort_alg;
 
-
-
 /*
 sort_alg algorithms[] =
 {
 	{ iterative_merge,          "itermerge" },
-	{ heapsort,                 "hsort"     },     
+	{ heapsort,                 "hsort"     },
 	{ ternary_heapsort,         "trihsort"  },
 	{ quad_heapsort,            "quadhsort" },
 	{ qsort_wrapper,            "qsort"     },
@@ -100,45 +89,30 @@ sort_alg algorithms[] =
 
 sort_alg algorithms[] =
 {
-	{ heapsort,                 "hsort"     },     
+	{ heapsort,                 "hsort"     },
 	{ ternary_heapsort,         "trihsort"  },
 	{ quad_heapsort,            "quadhsort" }
 };
 
-
-
-
-size_t n2_sizes[] = { 10, 50, 500, 1000, 5000, 10000, 50000 };
-
-
+size_t n2_sizes[]      = { 10, 50, 500, 1000, 5000, 10000, 50000 };
 size_t n_sizes_small[] = { 10000, 50000, 100000+3, 500000-5, 1000000 };
-size_t n_sizes_med[] = { 10000, 50000, 100000+3, 500000-5, 1000000, 5000000, 10000000, 50000000 };
+size_t n_sizes_med[]   = { 10000, 50000, 100000+3, 500000-5, 1000000, 5000000, 10000000, 50000000 };
 size_t n_sizes_giant[] = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
-
-
-size_t n_sizes[] = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
+size_t n_sizes[]       = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
 
 #define NUM_ALGS (sizeof(algorithms)/sizeof(sort_alg))
 #define NUM_N (sizeof(n_sizes)/sizeof(size_t))
-
-
-
-
-
 
 int main()
 {
 	int start_n = 0;
 	int num_n = NUM_N;
-	
 	double table_results[NUM_ALGS][NUM_N];
 	clock_t before;
-
 	int *test_array, *temp_array;
+	size_t i, j, k;
 
 	printf("%u %d\n", (unsigned)sizeof(int), INT_MAX);
-
-	size_t i, j, k;
 	
 	for(i=start_n; i<num_n; ++i) {
 		srand(time(NULL));
@@ -151,13 +125,11 @@ int main()
 		
 		printf("N = %lu\n", n_sizes[i]);
 
-		//loop through selected algorithms it test_struct
 		for (j=0; j<NUM_ALGS; ++j) {
 			before = clock();
 			algorithms[j].func(temp_array, n_sizes[i]);
 			table_results[j][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 
-			//check results
 #ifdef DEBUG
 			for(k=1; k<n_sizes[i]; ++k) {
 				if(temp_array[k-1] > temp_array[k]) {
@@ -174,7 +146,6 @@ int main()
 		free(temp_array);
 		free(test_array);
 	}
-
 
 	printf("%50s\n", "Sort time in milliseconds");
 	printf("%10s", "N");
@@ -194,9 +165,7 @@ int main()
 		putchar('\n');
 	}
 
-
 	FILE* file = fopen("output.dat", "w");
-
 	fprintf(file, "%*sN", 11, " ");
 	for (i=start_n; i<num_n; ++i)
 		fprintf(file, "%12lu", n_sizes[i]);
@@ -210,15 +179,8 @@ int main()
 	}
 
 	fclose(file);
-
-
 	return 0;
 }
-
-
-
-
-
 
 
 
