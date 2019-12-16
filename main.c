@@ -57,6 +57,11 @@ void qsort_my_wrapper(int a[], size_t n)
 	generic_qsort(a, n, sizeof(int), cmp_int_lt);
 }
 
+void qsort_memcpy_wrapper(int a[], size_t n)
+{
+	generic_mcpy_qsort(a, n, sizeof(int), cmp_int_lt);
+}
+
 typedef struct sort_alg
 {
 	sort_func func;
@@ -77,28 +82,31 @@ sort_alg algorithms[] =
 	{ qsort_insertion_wrapper,  "qinssort"  }
 };
 
+*/
 sort_alg algorithms[] =
 {
 	{ qsort_wrapper,            "qsort"         },
 	{ qsort_lib_wrapper,        "qsortlib"      },
 	{ qsort_my_wrapper,         "genericqsort"  },
+	{ qsort_memcpy_wrapper,  "genericmcpyqsort"  },
 	{ iter_qsort_wrapper,       "iterqsort"     },
 	{ qsort_insertion_wrapper,  "qinssort"      }
 };
-*/
 
+/*
 sort_alg algorithms[] =
 {
 	{ heapsort,                 "hsort"     },
 	{ ternary_heapsort,         "trihsort"  },
 	{ quad_heapsort,            "quadhsort" }
 };
+*/
 
 size_t n2_sizes[]      = { 10, 50, 500, 1000, 5000, 10000, 50000 };
 size_t n_sizes_small[] = { 10000, 50000, 100000+3, 500000-5, 1000000 };
 size_t n_sizes_med[]   = { 10000, 50000, 100000+3, 500000-5, 1000000, 5000000, 10000000, 50000000 };
 size_t n_sizes_giant[] = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
-size_t n_sizes[]       = { 500000-5, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000 };
+size_t n_sizes[]       = { 500000-5, 1000000, 5000000, 10000000, 50000000 };
 
 #define NUM_ALGS (sizeof(algorithms)/sizeof(sort_alg))
 #define NUM_N (sizeof(n_sizes)/sizeof(size_t))
@@ -130,6 +138,7 @@ int main()
 			algorithms[j].func(temp_array, n_sizes[i]);
 			table_results[j][i] = ((double)(clock() - before))/CLOCKS_PER_SEC;
 
+#define DEBUG
 #ifdef DEBUG
 			for(k=1; k<n_sizes[i]; ++k) {
 				if(temp_array[k-1] > temp_array[k]) {

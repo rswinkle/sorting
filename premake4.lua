@@ -22,11 +22,11 @@ solution "Sorting"
 
 		configuration "Debug"
 			defines { "DEBUG" }
-			flags { "Symbols" }
+			symbols "On"
 
 		configuration "Release"
 			defines { "NDEBUG" }
-			flags { "Optimize" }
+			optimize "On"
 
 		configuration { "linux", "gmake" }
 			buildoptions { "-pedantic" }
@@ -48,11 +48,11 @@ solution "Sorting"
 
 		configuration "Debug"
 			defines { "DEBUG" }
-			flags { "Symbols" }
+			symbols "On"
 
 		configuration "Release"
 			defines { "NDEBUG" }
-			flags { "Optimize" }
+			optimize "On"
 
 		configuration { "linux", "gmake" }
 			buildoptions { "-std=c99", "-pedantic" }

@@ -377,6 +377,48 @@ void generic_qsort(void* a, size_t n, size_t size, int(*compare)(const void* , c
 	generic_qsort_recurse(a, 0, n-1, size, compare);
 }
 
+// same as above except uses memcpy
+
+int generic_mcpy_partition(void* array, size_t p, size_t r, size_t size, int(*compare)(const void*, const void*))
+{
+	unsigned char* a = (unsigned char*)array;
+	unsigned char* x = &a[r*size];
+	size_t i = p-1;
+	int temp;
+
+	for (size_t j=p; j<r; ++j) {
+		if (compare(&a[j*size], x) <= 0) {
+			++i;
+
+			memcpy(&temp, &a[j*size], size);
+			memcpy(&a[j*size], &a[i*size], size);
+			memcpy(&a[i*size], &temp, size);
+		}
+	}
+
+	++i;
+	memcpy(&temp, &a[i*size], size);
+	memcpy(&a[i*size], x, size);
+	memcpy(x, &temp, size);
+	return i;
+}
+
+void generic_mcpy_qsort_recurse(void* a, size_t p, size_t r, size_t size, int(*compare)(const void*, const void*))
+{
+	if (p < r && ~r) {
+		int q = generic_mcpy_partition(a, p, r, size, compare);
+		generic_mcpy_qsort_recurse(a, p, q-1, size, compare);
+		generic_mcpy_qsort_recurse(a, q+1, r, size, compare);
+	}
+}
+
+void generic_mcpy_qsort(void* a, size_t n, size_t size, int(*compare)(const void* , const void*))
+{
+	generic_mcpy_qsort_recurse(a, 0, n-1, size, compare);
+}
+
+
+
 
 // Traditional Recursive Mergesort
 void merge(int a[], size_t p, size_t q, size_t r)
