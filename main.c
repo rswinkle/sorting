@@ -1,5 +1,5 @@
 // Written by Robert Winkler
-// 
+//
 // An benchmark program comparing different sorting algorithms
 // and implementations.
 
