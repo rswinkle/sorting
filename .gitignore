@@ -10,4 +10,6 @@ cmake_install.cmake
 #always ignore stats and build dirs
 stats/*
 build/*
+!build/Makefile
+!build/*.make
 *.swp
