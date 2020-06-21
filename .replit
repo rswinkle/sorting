@@ -1,2 +1,2 @@
 language = "c"
-run = "cd build && make && ./benchmark"
+run = "cd build && make config=release verbose=1 && ./benchmark"
