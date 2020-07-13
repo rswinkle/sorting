@@ -5,8 +5,8 @@ Sorting Algorithms
 
 This is just a set of sorting algorithms and a benchmarking program.
 
-I'll add several more algorithms and make some much needed
-improvements to some to make tmem more competetive.
+I should add several more sorting algorithms and have a cleaner divided system for testing
+sets of algorithms with different Big-O running times.
 
 I realize that clock() isn't the most accurate/precise timing method
 but it's simple to use and will result in the same ranking even if
@@ -40,3 +40,14 @@ and runs the same as C++.
 The results are pretty self explanatory but you can redirect them to a file (output.dat) and then
 run plotbarchart.py to get a "nice" bar chart of the data.  See heapsort_times.png and quicksort_times.png
 for old examples.
+
+Algorithms
+==========
+- [x] Quicksort and 3 variations
+- [x] Heap sort and 2 variations
+- [x] Merge sort and 1 variation
+- [x] Insertion sort
+- [ ] Radix sort
+- [ ] Shell sort
+- [ ] Comb sort
+- [ ] Gnome Sort, Bubble Sort, etc.
